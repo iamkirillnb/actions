@@ -1,6 +1,16 @@
 name: Print workflow
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Choose environment'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - prod
 
 jobs:
   print_hello:
@@ -11,18 +21,16 @@ jobs:
 
   print_dev:
     runs-on: ubuntu-latest
+    if: github.event.inputs.environment == 'dev'
     needs: print_hello
-    if: success()
-    environment: dev
     steps:
       - name: Print dev
         run: echo "dev"
         
   print_prod:
     runs-on: ubuntu-latest
+    if: github.event.inputs.environment == 'prod'
     needs: print_hello
-    if: success()
-    environment: prod
     steps:
       - name: Print prod
         run: echo "prod"
